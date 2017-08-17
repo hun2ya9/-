@@ -1,0 +1,158 @@
+
+
+방법 1. import time 해서 time.sleep(시간) 으로 한 스크립트에서 주기적 실행
+
+
+방법 2. crontab 명령어를 이용해서 일정 시간마다 스크립트를 돌리는 방법
+
+
+
+방법 2 사용
+
+전체 적인 그림 : 
+가상머신 - 리눅스 설치(우분투는 내가 안써봐서 centos로 설명) - putty로 원격 접속 - winSCP로 윈도우에서 만들어둔 파이썬 스크립트파일을 리눅스로 보냄 - crontab 명령어 통해서 주기적 실행
+
+
+
+
+vmware 설치,putty설치 ----------------------------------------------------------------
+
+www.centOS.org 접속
+Get centos now - alternative downloads - 6.9version ISO images - Actual Country 우리나라꺼 아무거나 - DVD1.iso 나 토랜트로 설치(토랜트 일 경우 Centos-6.8-x86_64-bin-DVD1(3.76GB)만 다운) - 
+
+www.vmware.com - 다운로드(윈도우용임) - workstation pro - window64-bit - CDkey : [5A02H-AU243-TZJ49-GTC7K-3C61N] - home - creat a New VM - custom - 12.0으로 - iso 이미지파일 나중에 - linux - centOS-64bit - 왼쪽에 CD-DVD - iso 찾아서 넣기 - power on this virtual Machine - 화면클릭 - 
+
+----------------------------------------------------------------
+
+centOS - 한국어 - 기본저장장치 - 암호 P@ssw0rd - 파티션 추가 마음대로 - 이름 용량 맞춰서 하나씩 다 만들어야함 마지막에는 (/는 루트경로임) / 에다가 편집 - 가능한 최대용량 - 디스크에 변경사항기록 - 다음 - 지금선택 - 기반시스템 - 레거시 유닉스 호환성 - 패키지 - ksh, 서버 - FTP서버 - 설치 완료
+
+****같은 내용인데 밑에꺼도 참고하면서 설치***********************
+point
+custom 설치
+1. I will install the operating system later	
+						
+2.Linux / centos or centos64bit			
+  RAM 1G(1024)  hdd 40G				
+								
+3. cdrom 인식 (초록불 꼭 확인)			
+4. install or upgrade an existing system	
+disc found skip~
+한국어
+한국어
+기본장치
+utc 체크해제
+네트워크 다음
+
+5. 파티션 (사용자 레이아웃)					
+①  / 200M
+②  /boot 200M
+③ /usr 12000M
+④ /var 4000M
+⑤ swap 2048M (파일시스템유형)
+⑥ /home 200M
+⑦ 기존 / => 최대치로 변경(가능한 최대용량)
+
+4. desktop, 지금선택
+   기반시스템 => 레거시 유닉스 호환성 => 선택적 패키지 ksh
+   서버 => FTP 
+
+5. root(관리자) 로그인후 랜카드 설정 
+    오른쪽 상단 네트워크 아이콘
+    오른쪽 클릭 후 연결 편집
+    system eth0 더블클릭
+    자동연결 체크
+
+-----------------------------------------------
+잘모르겠으면 걍 네이버 검색을
+
+리눅스 설치했으면 실행해서 로그인
+아이디는 root 비밀번호는 위에서 적은대로
+리눅스 화면 우클릭하고 터미널창 실행 - ifconfig 명령어 입력하면 중간에 inet addr: 라고해서 192.168.~ 이거
+
+putty는 원격접속하는 프로그램인데 이거 설치하고 실행
+ip ? 입력하는 곳에 방금 알아낸 192.168~ 이거 입력하면 접속
+아이디 비밀번호 동일하게 입력하면 일단은 
+기본 준비 완료
+
+==========
+언제나 순서는 vmware 키고 리눅스 계정 로그인 후 - putty 접속
+==========
+
+winSCP로 리눅스에 py 파일보내기 -> 이것도 프로그램 설치해야돼 윈도우랑 리눅스 사이에 그냥 파일 교환이 안되서
+그걸 해주는 프로그램인가 보다 .. 이거 없이도 할 수 있는데 내가 기억이 안나네
+참고: (http://hack-cracker.tistory.com/150)
+한글을 영어로 다 고치고 당연한거지만 오류있는지 확인하고 보내야할것
+그냥 홈디렉토리밑에(./) 로 보내면 되는데 그냥 실행하면 바로 뜨는곳에 끌어다가 보내면 될거야 
+
+
+다시 putty 창으로 돌아가서
+
+난 그냥 3버전으로 해서 3버전 설치하는건데 너희들은 어떨지 모르겠네 
+내가 한대로면 파이썬 버전확인후 2.버전이면 3.버전으로 재설치
+python -V 
+버전확인하는 명령어
+
+
+이거는 c언어 컴파일러같은데 ./configure 할때 필요해서 하는거같다
+yum -y install gcc
+
+
+python 설치 => 
+cd /usr/local/src
+wget https://www.python.org/ftp/python/3.5.0/Python-3.5.0.tgz
+tar xjf Python-3.5.0.tgz
+cd Python-3.5.0
+./configure
+make && make install
+
+tar는 압축풀기
+./confiure는 환경설정??
+make가 컴파일 해서 실행가능한 실행파일로 만들어준다
+make install은 make로 만든 실행파일 설치하는것
+
+
+
+만약에 만약에 위에꺼가 안되면
+mkdir /test
+cd test
+wget https://www.python.org/ftp/python/3.6.1/Python-3.6.1.tgz
+tar xzf Python-3.6.1.tgz
+cd Python-3.6.1
+./configure --prefix=/usr/local/python3.6 --enable-shared
+make install
+
+------------------------------------------------------------------
+리눅스라서 이것들도 다시 설치해줘야된다
+
+pip3.5 install beautifulsoup4
+pip3.5 install slacker
+
+crontab -e 하면 vi 환경으로 넘어가는데
+a누르면 텍스트 입력이 가능 간단하게는 키보드 화살표 방향으로 이동하고 esc키 누르고 ZZ 누르면 저장된다
+
+입력할 내용
+SHELL=/bin/bash
+PATH=/usr/local/bin/:/sbin:/bin:/usr/sbin:/usr/bin
+*/1 * * * * python3 ~/파일이름.py
+
+*/1은 1분마다 실행
+5분마다 실행은 */5 이런식으로
+* * * * * 이거는
+분 시 일 월 요일 순이다.
+
+여기까지 입력하고 esc키 ZZ 입력 
+
+service crond restart  
+이거는 데몬돌리는건데 (수정한 서비스를 다시 시작한다는뜻 = 수정할 때마다 이 명령어입력)
+이것도 입력
+
+----------------------------------------
+mail 명령어 치면 출력이나 오류같은거 볼 수 있는데
+z 입력 계속 하다가 제일 큰 숫자 나오는거 그대로 입력하면 메일 볼 수 있고 
+more 나오면 앤터 계속 누르면됨
+탈출 방법은 ctrl + z
+
+===============================끝========================
+
+python3 파일이름.py 이렇게 하면 crontab아니고 그냥 기본창에서 테스트 하는 겸 실행 가능
+
