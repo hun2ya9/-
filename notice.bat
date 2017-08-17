@@ -1,0 +1,1 @@
+python C:\Python\notice.py
