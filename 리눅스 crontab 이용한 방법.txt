@@ -1,6 +1,6 @@
 
 
-방법 1. import time 해서 time.sleep(시간) 으로 한 스크립트에서 주기적 실행
+방법 1. import time 해서 무한 반복문을 time.sleep(시간) 으로 한 스크립트에서 주기적 실행
 
 
 방법 2. crontab 명령어를 이용해서 일정 시간마다 스크립트를 돌리는 방법
